@@ -2,9 +2,9 @@ package randomStrategy;
 
 import entities.Barrel;
 
-public class RandomBarrelProvider implements RandomProvider {
-    private final String[] BarrelContentArray = {"water", "fuel", "alcohol", "gas", "sand"};
-    private final String[] BarrelMaterialArray = {"plastic", "carton", "metal", "wood", "glass"};
+public class RandomBarrelProvider implements RandomProvider<Barrel> {
+    private final String[] BARREL_CONTENT_ARRAY = {"water", "fuel", "alcohol", "gas", "sand"};
+    private final String[] BARREL_MATERIAL_ARRAY = {"plastic", "carton", "metal", "wood", "glass"};
 
     @Override
     public Barrel[] getObjectArray(int length) {
@@ -12,8 +12,8 @@ public class RandomBarrelProvider implements RandomProvider {
         for (int i = 0; i < barrels.length; i++) {
             barrels[i] = Barrel.builder()
                     .volume(random.nextDouble())
-                    .content(BarrelContentArray[random.nextInt(5)])
-                    .material(BarrelMaterialArray[random.nextInt(5)])
+                    .content(BARREL_CONTENT_ARRAY[random.nextInt(5)])
+                    .material(BARREL_MATERIAL_ARRAY[random.nextInt(5)])
                     .build();
         }
         return barrels;

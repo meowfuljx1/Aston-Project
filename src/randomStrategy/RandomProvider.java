@@ -2,7 +2,8 @@ package randomStrategy;
 
 import java.util.Random;
 
-public interface RandomProvider {
+public interface RandomProvider<T> {
     Random random = new Random();
-    Object[] getObjectArray(int length);
+
+    T[] getObjectArray(int length);
 }
