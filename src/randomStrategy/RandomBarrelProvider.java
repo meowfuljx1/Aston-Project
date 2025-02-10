@@ -7,7 +7,7 @@ public class RandomBarrelProvider implements RandomProvider<Barrel> {
     private final String[] BARREL_MATERIAL_ARRAY = {"plastic", "carton", "metal", "wood", "glass"};
 
     @Override
-    public Barrel[] getObjectArray(int length) {
+    public Barrel[] getRandomArray(int length) {
         Barrel[] barrels = new Barrel[length];
         for (int i = 0; i < barrels.length; i++) {
             barrels[i] = Barrel.builder()
