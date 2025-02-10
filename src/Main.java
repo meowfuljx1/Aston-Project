@@ -1,20 +1,43 @@
-import java.util.*;
-
-public class Main {
-    public static void main(String[] args) {
-
-    }
-}
-import initialization.Initializable;
-import initialization.InitializeArrayFromFile;
-import initialization.InitializeArrayManually;
-import initialization.InitializeArrayRandomly;
+import fromFileStrategy.FromFileAnimalProvider;
+import fromFileStrategy.FromFileBarrelProvider;
+import fromFileStrategy.FromFileHumanProvider;
+import fromFileStrategy.FromFileProvider;
+import manualStrategy.ManualAnimalProvider;
+import manualStrategy.ManualBarrelProvider;
+import manualStrategy.ManualHumanProvider;
+import manualStrategy.ManualProvider;
+import randomStrategy.RandomAnimalProvider;
+import randomStrategy.RandomBarrelProvider;
+import randomStrategy.RandomHumanProvider;
+import randomStrategy.RandomProvider;
 
 import java.util.*;
 
 public class Main {
     private final Scanner scanner = new Scanner(System.in);
-    private final Map<String, Initializable> map = new HashMap<>();
+
+    private final Map<Integer, FromFileProvider<?>> fromFileStrategy = Map.of(
+            1, new FromFileAnimalProvider(),
+            2, new FromFileBarrelProvider(),
+            3, new FromFileHumanProvider()
+    );
+
+    private final Map<Integer, ManualProvider<?>> manualStrategy = Map.of(
+            1, new ManualAnimalProvider(),
+            2, new ManualBarrelProvider(),
+            3, new ManualHumanProvider()
+    );
+
+    private final Map<Integer, RandomProvider<?>> randomStrategy = Map.of(
+            1, new RandomAnimalProvider(),
+            2, new RandomBarrelProvider(),
+            3, new RandomHumanProvider()
+    );
+
+    public static void main(String[] args) {
+        Main menu = new Main();
+        menu.runMenu();
+    }
 
     Map<Integer, String> objectTypes = Map.of(
             1, "Animal",
@@ -28,14 +51,6 @@ public class Main {
             3, "FromFile"
     );
 
-    public Main() {
-        {
-            map.put("Manually", new InitializeArrayManually());
-            map.put("Randomly", new InitializeArrayRandomly());
-            map.put("FromFile", new InitializeArrayFromFile());
-        }
-    }
-
     public void runMenu() {
         while (true) {
             String objectType = chooseObjectType();
@@ -46,6 +61,7 @@ public class Main {
 
             String initializationType = chooseInitializationType();
             if (initializationType.equals("exit")) break;
+
 
             var array = map.get(initializationType).initArray(objectType, length);
 
@@ -148,8 +164,5 @@ public class Main {
         return input;
     }
 
-    public static void main(String[] args) {
-        Main menu = new Main();
-        menu.runMenu();
-    }
+
 }
