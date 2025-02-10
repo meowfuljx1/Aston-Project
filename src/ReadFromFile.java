@@ -10,8 +10,6 @@ public class ReadFromFile {
     public static Object[] readFromFile(String fileName) {
         Object[] objects = null;
         int objectCount = 0;
-
-        // Первый проход: подсчет количества объектов
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -21,23 +19,18 @@ public class ReadFromFile {
             }
         } catch (IOException e) {
             System.err.println("Ошибка при чтении файла: " + e.getMessage());
-            return new Object[0]; // Возвращаем пустой массив в случае ошибки
+            return new Object[0];
         }
-
-        // Создаем массив нужного размера
         objects = new Object[objectCount];
-
-        // Второй проход: заполнение массива объектами
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
-            int index = -1; // Индекс текущего объекта в массиве
+            int index = -1;
             Animal.AnimalBuilder animalBuilder = null;
             Barrel.BarrelBuilder barrelBuilder = null;
             Human.HumanBuilder humanBuilder = null;
 
             while ((line = br.readLine()) != null) {
                 if (line.startsWith("Вид:")) {
-                    // Если начинается новый объект, сохраняем предыдущий (если он есть)
                     if (animalBuilder != null) {
                         objects[index] = animalBuilder.build();
                     } else if (barrelBuilder != null) {
@@ -57,7 +50,6 @@ public class ReadFromFile {
                         animalBuilder.wool(Boolean.parseBoolean(line.substring("Шерсть:".length()).trim()));
                     }
                 } else if (line.startsWith("Объем:")) {
-                    // Если начинается новый объект, сохраняем предыдущий (если он есть)
                     if (animalBuilder != null) {
                         objects[index] = animalBuilder.build();
                     } else if (barrelBuilder != null) {
@@ -77,7 +69,6 @@ public class ReadFromFile {
                         barrelBuilder.material(line.substring("Материал бочки:".length()).trim());
                     }
                 } else if (line.startsWith("Фамилия:")) {
-                    // Если начинается новый объект, сохраняем предыдущий (если он есть)
                     if (animalBuilder != null) {
                         objects[index] = animalBuilder.build();
                     } else if (barrelBuilder != null) {
@@ -98,7 +89,6 @@ public class ReadFromFile {
                     }
                 }
             }
-            // Добавляем последний объект, если он есть
             if (animalBuilder != null) {
                 objects[index] = animalBuilder.build();
             } else if (barrelBuilder != null) {
