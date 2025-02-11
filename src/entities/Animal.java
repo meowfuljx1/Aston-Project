@@ -39,5 +39,9 @@ public record Animal(String type, String eyeColor, boolean wool) implements Comp
         public Animal build() {
             return new Animal(type, eyeColor, wool);
         }
+
+        public boolean isComplete() {
+            return type != null && eyeColor != null;
+        }
     }
 }

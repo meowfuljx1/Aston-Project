@@ -39,5 +39,9 @@ public record Human(String lastName, String gender, Integer age) implements Comp
         public Human build() {
             return new Human(lastName, gender, age);
         }
+
+        public boolean isComplete() {
+            return age > 0 && lastName != null && gender != null;
+        }
     }
 }

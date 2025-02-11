@@ -39,5 +39,9 @@ public record Barrel(double volume, String content, String material) implements 
         public Barrel build() {
             return new Barrel(volume, content, material);
         }
+
+        public boolean isComplete() {
+            return volume > 0 && content != null && material != null;
+        }
     }
 }
