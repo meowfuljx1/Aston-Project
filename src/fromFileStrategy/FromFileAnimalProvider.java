@@ -1,70 +1,49 @@
 package fromFileStrategy;
 
 import entities.Animal;
-
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import static manualStrategy.Validator.validateFile;
 
 public class FromFileAnimalProvider implements FromFileProvider<Animal> {
-    @Override
-    public Animal[] getFileArray(String fileName, int length) {
-        validate(fileName);
-        Animal[] animals = new Animal[length];
-        int actualSize = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+    public Animal[] getFileArray(Scanner scanner, int length) {
+        String path = validateFile(scanner);
+        ArrayList<Animal> list = new ArrayList<>(length);
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
-            Animal.AnimalBuilder builder = Animal.builder();
-            while ((line = br.readLine()) != null && actualSize < length) {
-                if (line.trim().isEmpty()) {
-                    if (validate(builder)) {
-                        animals[actualSize++] = builder.build();
-                    }
-                    builder = Animal.builder();
-                } else {
-                    String[] parts = line.split(":", 2);
-                    if (parts.length == 2) {
-                        String key = parts[0].trim();
-                        String value = parts[1].trim();
-                        switch (key) {
-                            case "Вид" -> builder.type(value);
-                            case "Цвет глаз" -> builder.eyeColor(value);
-                            case "Шерсть" -> {
-                                boolean hasWool = value.equalsIgnoreCase("есть");
-                                builder.wool(hasWool);
-                            }
-                        }
-                    }
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.replaceAll(" ", "").split(",", 3);
+                boolean isCorrectValues;
+                try {
+                    isCorrectValues = validate(parts);
+                } catch (ArrayIndexOutOfBoundsException e){
+                    continue;
+                }
+                if (isCorrectValues) {
+                    Animal animal = Animal.builder()
+                            .type(parts[0])
+                            .eyeColor(parts[1])
+                            .wool(Boolean.parseBoolean(parts[2]))
+                            .build();
+                    list.add(animal);
                 }
             }
-            if (actualSize < length && validate(builder)) {
-                animals[actualSize++] = builder.build();
-            }
         } catch (IOException e) {
-            System.err.println("Ошибка при чтении файла: " + e.getMessage());
-            return new Animal[0];
+            throw new RuntimeException(e);
         }
-        Animal[] result = new Animal[actualSize];
-        System.arraycopy(animals, 0, result, 0, actualSize);
-        return result;
+        list.trimToSize();
+        return list.toArray(new Animal[0]);
     }
 
-    @Override
-    public boolean validate(String fileName) {
-        File file = new File(fileName);
-        if (!file.exists()) {
-            throw new IllegalArgumentException("Файл не существует: " + fileName);
-        }
-        if (!file.canRead()) {
-            throw new IllegalArgumentException("Файл недоступен для чтения: " + fileName);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean validate(Object builder) {
-        return builder instanceof Animal.AnimalBuilder && ((Animal.AnimalBuilder) builder).isComplete();
+    public boolean validate(String[] parts) {
+        return parts[0].matches("[a-zA-Zа-яА-Я]+") &&
+                parts[1].matches("[a-zA-Zа-яА-Я]+") &&
+                (parts[2].equalsIgnoreCase("true") || parts[2].equalsIgnoreCase("false"));
     }
 }
+
 

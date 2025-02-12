@@ -1,4 +1,6 @@
 package manualStrategy;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public final class Validator {
@@ -69,6 +71,18 @@ public final class Validator {
                 return input;
             }
             System.out.println("Ошибка: введите 'м' или 'ж'.");
+        }
+    }
+
+    public  static String validateFile(Scanner scanner) {
+        System.out.println("Введите путь до файла:");
+        Path path;
+        while (true) {
+            path = Path.of(scanner.nextLine());
+            if (Files.exists(path) && Files.isReadable(path))
+                return path.toString();
+            else
+                System.out.println("Файл не существует по данному пути или к нему нет доступа\nВведите другой:");
         }
     }
 }
