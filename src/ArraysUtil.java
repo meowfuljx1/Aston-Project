@@ -1,10 +1,18 @@
+import manualStrategy.Validator;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Scanner;
 
 // Utility-class
 public final class ArraysUtil {
-
     private static final int RUN = 32; // Минимальный размер подмассива
-
+    private static String path;
     // бинарный поиск
     public static <T extends Comparable<T>> int binarySearch(T[] array, T target) {
         int low = 0, mid, high = array.length - 1;
@@ -17,7 +25,7 @@ public final class ArraysUtil {
             compareResult = guess.compareTo(target);
 
             if (compareResult == 0) return mid;
-            else if (compareResult  > 0) high = mid - 1;
+            else if (compareResult > 0) high = mid - 1;
             else low = mid + 1;
         }
         return -1;
@@ -87,6 +95,22 @@ public final class ArraysUtil {
 
         while (j < len2) {
             array[k++] = rightArray[j++];
+        }
+    }
+    public static <T extends Comparable<T>> void writeToFile(Scanner scanner, T[] array) throws IOException {
+        path=Validator.validateFile(scanner);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+            writer.write("Отсортированный массив: \n");
+            for(T object: array)
+                writer.write(object+ "\n");
+        }
+    }
+    public static <T extends Comparable<T>> void writeToFile(T[] array, T target, int index) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
+            writer.write("\nБинарный поиск объекта: " + target + "\n");
+            if (index==-1)
+                writer.write("Объект отсутствует в массиве");
+            else writer.write("Индекс объекта в массиве "+index);
         }
     }
 }

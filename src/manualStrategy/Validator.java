@@ -74,15 +74,15 @@ public final class Validator {
         }
     }
 
-    public  static String validateFile(Scanner scanner) {
-        System.out.println("Введите путь до файла:");
+    public static String validateFile(Scanner scanner) {
         Path path;
         while (true) {
+            System.out.println("Введите путь до файла:");
             path = Path.of(scanner.nextLine());
-            if (Files.exists(path) && Files.isReadable(path))
+            if (Files.isRegularFile(path))
                 return path.toString();
             else
-                System.out.println("Файл не существует по данному пути или к нему нет доступа\nВведите другой:");
+                System.out.println("Файл не существует по данному пути");
         }
     }
 }
