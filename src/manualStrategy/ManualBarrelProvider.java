@@ -1,6 +1,7 @@
 package manualStrategy;
 
 import entities.Barrel;
+import utility.Validator;
 
 import java.util.Scanner;
 
@@ -12,9 +13,9 @@ public final class ManualBarrelProvider implements ManualProvider<Barrel> {
         for (int i = 0; i < length; i++) {
             System.out.println("Введите данные для бочки #" + (i + 1));
 
-            double volume = Validator.validateVolume("Объем: ");
-            String content = Validator.validateString("Хранимый материал: ");
-            String material = Validator.validateString("Материал бочки: ");
+            double volume = Validator.validateVolume("Объем: ", scanner);
+            String content = Validator.validateString("Хранимый материал: ", scanner);
+            String material = Validator.validateString("Материал бочки: ", scanner);
 
             barrels[i] = new Barrel.BarrelBuilder()
                     .volume(volume)

@@ -2,7 +2,7 @@ package entities;
 
 import java.util.Comparator;
 
-public record Human(String lastName, String gender, int age) implements Comparable<Human> {
+public record Human(String lastName, char gender, int age) implements Comparable<Human> {
 
     public static HumanBuilder builder() {
         return new HumanBuilder();
@@ -18,10 +18,10 @@ public record Human(String lastName, String gender, int age) implements Comparab
 
     public static class HumanBuilder {
         private String lastName;
-        private String gender;
+        private char gender;
         private int age;
 
-        public HumanBuilder gender(String gender) {
+        public HumanBuilder gender(char gender) {
             this.gender = gender;
             return this;
         }

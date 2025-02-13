@@ -1,6 +1,7 @@
 package manualStrategy;
 
 import entities.Human;
+import utility.Validator;
 
 import java.util.Scanner;
 
@@ -12,12 +13,12 @@ public class ManualHumanProvider implements ManualProvider<Human> {
         for (int i = 0; i < length; i++) {
             System.out.println("Введите данные для человека: " + (i + 1));
 
-            String gender = Validator.validateGender("Пол (м/ж): ");
-            int age = Validator.validateAge("Возраст: ");
-            String lastName = Validator.validateString("Фамилия: ");
+            String gender = Validator.validateGender("Пол (м/ж): ", scanner);
+            int age = Validator.validateAge("Возраст: ", scanner);
+            String lastName = Validator.validateString("Фамилия: ", scanner);
 
             humans[i] = new Human.HumanBuilder()
-                    .gender(gender)
+                    .gender(gender.charAt(0))
                     .age(age)
                     .lastName(lastName)
                     .build();

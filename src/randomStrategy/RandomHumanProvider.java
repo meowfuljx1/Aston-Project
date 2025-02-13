@@ -3,7 +3,6 @@ package randomStrategy;
 import entities.Human;
 
 public class RandomHumanProvider implements RandomProvider<Human> {
-    private final String[] GENDER_ARRAY = {"Male", "Female"};
     private final String[] LAST_NAME_ARRAY = {"Smith", "Johnson", "Brown", "Miller", "Anderson"};
 
     @Override
@@ -12,7 +11,7 @@ public class RandomHumanProvider implements RandomProvider<Human> {
         for (int i = 0; i < humans.length; i++) {
             humans[i] = Human.builder()
                     .lastName(LAST_NAME_ARRAY[random.nextInt(5)])
-                    .gender(GENDER_ARRAY[random.nextInt(2)])
+                    .gender(random.nextInt(0, 2) == 0 ? 'ж' : 'м')
                     .age(random.nextInt(100))
                     .build();
         }

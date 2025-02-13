@@ -4,6 +4,8 @@ import entities.Human;
 import fromFileStrategy.*;
 import manualStrategy.*;
 import randomStrategy.*;
+import utility.ArraysUtil;
+import utility.Validator;
 
 import java.util.*;
 
@@ -40,7 +42,7 @@ public class Main {
     public void runMenu() {
         mainLoop:
         while (true) {
-            // получаем Класс объекта
+            // получаем класс объекта
             String objectType = chooseObjectType();
             if (objectType.equals("exit")) break;
 
@@ -70,15 +72,15 @@ public class Main {
             }
 
             // endpoint
-            while(true){
+            while (true) {
                 String op2 = whatsNext2();
-                if (op2.equals("binarySearch")){
+                if (op2.equals("binarySearch")) {
                     int index = binarySearch(array);
                     System.out.println(index != -1 ? "Индекс в массиве: " + index : "Объект отсутствует");
                 } else if (op2.equals("reset"))
                     continue mainLoop;
                 else
-                    break;
+                    break mainLoop;
             }
         }
         System.out.println("Завершение программы");
@@ -145,11 +147,11 @@ public class Main {
 
     private void sort(Object[] array) {
         if (array instanceof Animal[])
-            ArraysUtil2.sort(array, Comparator.comparing(o -> ((Animal) o)));
+            ArraysUtil.sort(array, Comparator.comparing(o -> ((Animal) o)), scanner);
         else if (array instanceof Barrel[])
-            ArraysUtil2.sort(array, Comparator.comparing(o -> (Barrel) o));
+            ArraysUtil.sort(array, Comparator.comparing(o -> (Barrel) o), scanner);
         else
-            ArraysUtil2.sort(array, Comparator.comparing(o -> (Human) o));
+            ArraysUtil.sort(array, Comparator.comparing(o -> (Human) o), scanner);
     }
 
     private int binarySearch(Object[] array) {
@@ -158,14 +160,9 @@ public class Main {
         int index;
 
         if (array instanceof Animal[]) {
-            System.out.print("Тип: ");
-            String type = scanner.next();
-
-            System.out.print("Цвет глаз: ");
-            String eyeColor = scanner.next();
-
-            System.out.print("Шерсть (true/false): ");
-            boolean wool = scanner.nextBoolean();
+            String type = Validator.validateString("Тип: ", scanner);
+            String eyeColor = Validator.validateString("Цвет глаз: ", scanner);
+            boolean wool = Validator.validateBoolean("Шерсть (true/false): ", scanner);
 
             Animal target = Animal.builder()
                     .type(type)
@@ -173,16 +170,11 @@ public class Main {
                     .wool(wool)
                     .build();
 
-            index = ArraysUtil2.binarySearch(array, target, Comparator.comparing(o -> ((Animal) o)));
+            index = ArraysUtil.binarySearch(array, target, Comparator.comparing(o -> ((Animal) o)));
         } else if (array instanceof Barrel[]) {
-            System.out.print("Объем: ");
-            double volume = scanner.nextDouble();
-
-            System.out.print("Хранимый материал: ");
-            String content = scanner.next();
-
-            System.out.print("Из чего изготовлена: ");
-            String material = scanner.next();
+            double volume = Validator.validateVolume("Объем: ", scanner);
+            String content = Validator.validateString("Хранимый материал: ", scanner);
+            String material = Validator.validateString("Из чего изготовлена: ", scanner);
 
             Barrel barrel = Barrel.builder()
                     .volume(volume)
@@ -190,35 +182,26 @@ public class Main {
                     .material(material)
                     .build();
 
-            index = ArraysUtil2.binarySearch(array, barrel, Comparator.comparing(o -> ((Barrel) o)));
+            index = ArraysUtil.binarySearch(array, barrel, Comparator.comparing(o -> ((Barrel) o)));
         } else {
-            System.out.print("\nФамилия: ");
-            String lastName = scanner.next();
-
-            System.out.print("Пол: ");
-            String gender = scanner.next();
-
-            System.out.print("Возраст: ");
-            int age = scanner.nextInt();
+            String lastName = Validator.validateString("\nФамилия: ", scanner);
+            String gender = Validator.validateGender("Пол: ", scanner);
+            int age = Validator.validateAge("Возраст: ", scanner);
 
             Human human = Human.builder()
                     .lastName(lastName)
-                    .gender(gender)
+                    .gender(gender.charAt(0))
                     .age(age)
                     .build();
 
-            index = ArraysUtil2.binarySearch(array, human, Comparator.comparing(o -> ((Human) o)));
+            index = ArraysUtil.binarySearch(array, human, Comparator.comparing(o -> ((Human) o)));
         }
         return index;
     }
 
     private Object[] getArray(String initializationType, String objectType, int length) {
         return switch (initializationType) {
-            case "From file" -> {
-                System.out.println("Введите путь до файла:");
-                String path = scanner.next();
-                yield fromFileStrategy.get(objectType).getFileArray(path, length);
-            }
+            case "From file" -> fromFileStrategy.get(objectType).getFileArray(scanner, length);
             case "Manual" -> manualStrategy.get(objectType).getManualArray(scanner, length);
             default -> randomStrategy.get(objectType).getRandomArray(length); // Random
         };
@@ -238,8 +221,7 @@ public class Main {
     }
 
     private int chooseArrayLength() {
-        System.out.println("Сколько объектов поместить в массив?");
-        return validateInput();
+        return Validator.validatePositiveInt("Сколько объектов поместить в массив?\n", scanner);
     }
 
     private String chooseInitializationType() {
@@ -253,22 +235,6 @@ public class Main {
         );
         int input = validateInput(initializationTypes);
         return input == -1 ? "exit" : initializationTypes.get(input);
-    }
-
-    private int validateInput() {
-        int input;
-        while (true) {
-            try {
-                input = scanner.nextInt();
-                if (input > 0 || input == -1)
-                    return input;
-                else
-                    System.out.println("Минимум объектов в массиве - 1");
-            } catch (InputMismatchException e) {
-                System.out.println("Неверный ввод, введите число:");
-                scanner.nextLine();
-            }
-        }
     }
 
     private int validateInput(Map<Integer, String> validValues) {

@@ -11,7 +11,7 @@ public class RandomBarrelProvider implements RandomProvider<Barrel> {
         Barrel[] barrels = new Barrel[length];
         for (int i = 0; i < barrels.length; i++) {
             barrels[i] = Barrel.builder()
-                    .volume(random.nextDouble())
+                    .volume(Math.round(random.nextDouble(1, 100) * 100.0) / 100.0)
                     .content(BARREL_CONTENT_ARRAY[random.nextInt(5)])
                     .material(BARREL_MATERIAL_ARRAY[random.nextInt(5)])
                     .build();
