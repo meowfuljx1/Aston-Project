@@ -1,23 +1,24 @@
 package fromFileStrategy;
 
 import entities.Barrel;
+import utility.MyArrayList;
+import utility.Validator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-import static manualStrategy.Validator.validateFile;
 
 public class FromFileBarrelProvider implements FromFileProvider<Barrel> {
     public Barrel[] getFileArray(Scanner scanner, int length) {
-        String path = validateFile(scanner);
-        ArrayList<Barrel> list = new ArrayList<>(length);
+        scanner.nextLine();
+        String path = Validator.validateFile("Введите путь до файла:", scanner);
+        MyArrayList<Barrel> list = new MyArrayList<>(length);
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] parts = line.replaceAll(" ", "").split(",", 3);
+                String[] parts = line.replaceAll(" ", "").split(";", 3);
                 boolean isCorrectValues;
                 try {
                     isCorrectValues = validate(parts);
@@ -36,7 +37,6 @@ public class FromFileBarrelProvider implements FromFileProvider<Barrel> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        list.trimToSize();
         return list.toArray(new Barrel[0]);
     }
 
