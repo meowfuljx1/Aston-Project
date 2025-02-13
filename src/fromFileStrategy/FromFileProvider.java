@@ -1,6 +1,7 @@
 package fromFileStrategy;
+import java.util.Scanner;
 
 public interface FromFileProvider<T> {
-    T[] getFileArray(String path, int length);
-    boolean validate(String s); // Метод validate можете поменять
+    T[] getFileArray(Scanner scanner, int length);
+    boolean validate(String[] parts);
 }
